@@ -5,7 +5,11 @@
     "packages/sdk-core",
     "packages/admin-client",
     "packages/sdk-admin",
-    "packages/sdk-bff"
+    "packages/sdk-bff",
+    "packages/oidc",
+    "packages/express",
+    "packages/nestjs",
+    "packages/next"
   ],
   "scripts": {
     "test": "node --test packages/*/src/*.test.js scripts/smoke.mjs"

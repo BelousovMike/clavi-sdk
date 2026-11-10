@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clavi-fastapi"
+version = "0.1.0"
+description = "Clavi OIDC + Admin wiring for FastAPI"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "Clavi" }]
+dependencies = [
+  "clavi-oidc>=0.1.0",
+  "clavi-admin>=0.1.0",
+  "fastapi>=0.110",
+  "itsdangerous>=2.1",
+]
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

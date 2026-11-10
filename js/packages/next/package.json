@@ -1,0 +1,18 @@
+{
+  "name": "@clavi/next",
+  "version": "0.1.0",
+  "description": "Clavi OIDC provider helpers for Auth.js / NextAuth",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@clavi/admin-client": "0.1.0",
+    "@clavi/oidc": "0.1.0"
+  }
+}

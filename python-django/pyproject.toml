@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clavi-django"
+version = "0.1.0"
+description = "Clavi OIDC + Admin wiring for Django"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "Clavi" }]
+dependencies = [
+  "clavi-oidc>=0.1.0",
+  "clavi-admin>=0.1.0",
+  "Django>=4.2",
+]
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Framework :: Django",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

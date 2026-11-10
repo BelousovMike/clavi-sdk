@@ -16,9 +16,11 @@ fi
 perl -i -0pe "s|<Version>[^<]+</Version>|<Version>${VER}</Version>|" \
   "$ROOT/dotnet/Directory.Build.props"
 
-# Java — only the project version under artifactId clavi-admin-client
-perl -i -0pe "s|(<artifactId>clavi-admin-client</artifactId>\s*<version>)[^<]+(</version>)|\${1}${VER}\${2}|" \
-  "$ROOT/java/pom.xml"
+# Java parent + module parent versions
+perl -i -0pe "s|(<artifactId>clavi-sdk-java</artifactId>\s*<version>)[^<]+(</version>)|\${1}${VER}\${2}|g" \
+  "$ROOT/java/pom.xml" \
+  "$ROOT/java/admin-client/pom.xml" \
+  "$ROOT/java/spring-boot-starter/pom.xml"
 
 export SET_VERSION_ROOT="$ROOT"
 export SET_VERSION_VER="$VER"
@@ -48,10 +50,20 @@ for pkg in (root / "js" / "packages").iterdir():
         data["dependencies"] = deps
     p.write_text(json.dumps(data, indent=2) + "\n")
 
-toml = root / "python" / "pyproject.toml"
-text = toml.read_text()
-text = re.sub(r'(?m)^version = ".*"$', f'version = "{py_ver}"', text, count=1)
-toml.write_text(text)
+for toml_path in [
+    root / "python" / "pyproject.toml",
+    root / "python-oidc" / "pyproject.toml",
+    root / "python-fastapi" / "pyproject.toml",
+    root / "python-django" / "pyproject.toml",
+]:
+    if not toml_path.is_file():
+        continue
+    text = toml_path.read_text()
+    text = re.sub(r'(?m)^version = ".*"$', f'version = "{py_ver}"', text, count=1)
+    # keep peer deps on sibling clavi packages in sync for fastapi/django
+    text = re.sub(r'(clavi-oidc)>=[^"\s]+', rf'\1>={py_ver}', text)
+    text = re.sub(r'(clavi-admin)>=[^"\s]+', rf'\1>={py_ver}', text)
+    toml_path.write_text(text)
 
 print(f"Set version {ver} (python {py_ver})")
 PY

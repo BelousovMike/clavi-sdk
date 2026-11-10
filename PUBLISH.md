@@ -57,5 +57,9 @@ go get github.com/BelousovMike/clavi-sdk/go/clavi@vX.Y.Z
 
 ```bash
 dotnet pack Clavi.Sdk.sln -c Release -o ./artifacts
+(cd js && npm publish -w @clavi/oidc --dry-run)
+(cd java && mvn -B -DskipTests package)
 # do not push without intending a real release
 ```
+
+New Wave 1 packages published by the same tag workflow: `@clavi/oidc`, `@clavi/express`, `@clavi/nestjs`, `@clavi/next`, `clavi-oidc`, `clavi-fastapi`, `clavi-django`, `clavi-spring-boot-starter`.

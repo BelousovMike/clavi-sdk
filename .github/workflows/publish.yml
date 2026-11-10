@@ -55,8 +55,9 @@ jobs:
         env:
           CLAVI_SDK_SMOKE: "0"
       - name: Python test
-        working-directory: python
-        run: pip install -e ".[dev]" && pytest -q
+        run: |
+          pip install -e "./python[dev]" -e "./python-oidc" -e "./python-fastapi" -e "./python-django"
+          pytest -q python/tests
         env:
           CLAVI_SDK_SMOKE: "0"
       - name: Go test
@@ -139,13 +140,14 @@ jobs:
           esac
           npm publish -w @clavi/sdk-core --access public --tag "$TAG"
           npm publish -w @clavi/admin-client --access public --tag "$TAG"
+          npm publish -w @clavi/oidc --access public --tag "$TAG"
+          npm publish -w @clavi/express --access public --tag "$TAG"
+          npm publish -w @clavi/nestjs --access public --tag "$TAG"
+          npm publish -w @clavi/next --access public --tag "$TAG"
 
   pypi:
     needs: [test, resolve-version]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: python
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -153,9 +155,11 @@ jobs:
           python-version: "3.12"
       - name: Build
         run: |
-          ../scripts/set-version.sh "${{ needs.resolve-version.outputs.version }}"
+          ./scripts/set-version.sh "${{ needs.resolve-version.outputs.version }}"
           pip install build
-          python -m build
+          for dir in python python-oidc python-fastapi python-django; do
+            (cd "$dir" && python -m build)
+          done
       - name: Upload PyPI
         env:
           TWINE_USERNAME: __token__
@@ -166,7 +170,7 @@ jobs:
             exit 1
           fi
           pip install twine
-          twine upload dist/*
+          twine upload python/dist/* python-oidc/dist/* python-fastapi/dist/* python-django/dist/*
 
   maven:
     needs: [test, resolve-version]
@@ -199,6 +203,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           mvn -B -DskipTests deploy
+          # modules: admin-client + spring-boot-starter
 
   go-module:
     needs: [test, resolve-version]

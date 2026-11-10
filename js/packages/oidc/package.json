@@ -1,0 +1,14 @@
+{
+  "name": "@clavi/oidc",
+  "version": "0.1.0",
+  "description": "Shared Clavi OIDC options, PKCE, discovery, and role mapping",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "src"
+  ]
+}

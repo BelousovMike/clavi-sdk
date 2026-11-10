@@ -1,17 +1,28 @@
 # clavi-sdk
 
-Typed Admin API clients for Clavi Community (Apache-2.0).
+Typed Admin API clients and framework OIDC adapters for Clavi Community (Apache-2.0).
 
-Same idea in every language: create a client, call `auth` / `Auth`, then use resources like `users` / `Users`. Session cookies stay on the client. Point `baseUrl` at your tenant host (or set `tenantHost` when they differ).
+Shared OIDC + Admin config contract: [`docs/oidc-adapters.md`](docs/oidc-adapters.md).
 
-| Lang | Package |
-|------|---------|
-| .NET Admin API | `Clavi.Sdk.Admin` |
-| .NET ASP.NET Core OIDC | `Clavi.Sdk.AspNetCore` |
-| JS | `@clavi/admin-client` |
-| Java | `io.clavi:clavi-admin-client` |
-| Python | `clavi-admin` |
-| Go | `github.com/BelousovMike/clavi-sdk/go/clavi` |
+## Packages
+
+| Lang | Package | Role |
+|------|---------|------|
+| .NET | `Clavi.Sdk.Admin` | Admin API + DI |
+| .NET | `Clavi.Sdk.AspNetCore` | OIDC RP (cookie + PKCE + roles) |
+| JS | `@clavi/admin-client` | Admin API |
+| JS | `@clavi/oidc` | Shared OIDC options / PKCE / roles |
+| JS | `@clavi/express` | Express OIDC + Admin |
+| JS | `@clavi/nestjs` | NestJS module |
+| JS | `@clavi/next` | Auth.js / NextAuth provider |
+| Java | `io.clavi:clavi-admin-client` | Admin API |
+| Java | `io.clavi:clavi-spring-boot-starter` | Spring Boot OAuth2 + Admin bean |
+| Python | `clavi-admin` | Admin API |
+| Python | `clavi-oidc` | Shared OIDC helpers |
+| Python | `clavi-fastapi` | FastAPI router + Depends |
+| Python | `clavi-django` | Django views + decorators |
+| Go | `…/go/clavi` | Admin API |
+| Go | `…/go/clavi/oidc` | `net/http` middleware (chi-compatible) |
 
 ### .NET Admin
 
@@ -23,59 +34,45 @@ await client.AuthAsync("admin", password);
 var page = await client.Users.FindAsync(page: 1, pageSize: 20);
 ```
 
-Or wire DI: `services.AddClaviAdmin(configuration.GetSection("Clavi"))` and inject `ClaviAdminClient`.
+Or DI: `services.AddClaviAdmin(configuration.GetSection("Clavi"))`.
 
-### .NET ASP.NET Core app (login users via Clavi)
-
-Same configuration surface as Serilog — pick any mix:
+### .NET ASP.NET Core (OIDC)
 
 ```csharp
-// 1) appsettings / env only (section "Clavi")
-builder.Services.AddClaviOpenIdConnect();
-
-// 2) bind a section explicitly
-builder.Services.AddClaviOpenIdConnect(builder.Configuration.GetSection("Clavi"));
-
-// 3) Options lambda
-builder.Services.AddClaviOpenIdConnect(o =>
-{
-    o.Authority = "https://clavi.example";
-    o.ClientId = "my-app";
-});
-
-// 4) Fluent (Serilog-style): config + overrides
+builder.Services.AddClaviOpenIdConnect(); // section "Clavi"
+// or fluent:
 builder.Services.AddClaviOpenIdConnect(c => c
     .ReadFrom.Configuration(builder.Configuration)
-    .AcceptAnyServerCertificate(builder.Environment.IsDevelopment())
-    .ClientId("my-app"));
+    .AcceptAnyServerCertificate(builder.Environment.IsDevelopment()));
 ```
 
-```json
-{
-  "Clavi": {
-    "Authority": "https://clavi.example",
-    "ClientId": "my-app",
-    "CallbackPath": "/signin-oidc"
-  }
-}
-```
-
-App policies still use roles from the Clavi token:
-
-```csharp
-builder.Services.AddAuthorization(o =>
-    o.AddPolicy("catalog.write", p => p.RequireRole("acme.catalog.write")));
-```
-
-
-### JavaScript
+### JavaScript Admin
 
 ```js
 import ClaviAdminClient from '@clavi/admin-client';
-
 const client = new ClaviAdminClient({ baseUrl: 'https://clavi.example/' });
 await client.auth({ username: 'admin', password });
-const page = await client.users.find({ page: 1, pageSize: 20 });
+```
+
+### Express
+
+```js
+import { addClaviOpenIdConnect, requireClaviAuth } from '@clavi/express';
+addClaviOpenIdConnect(app, (c) => c.readFrom.env().clientId('my-app'));
+app.get('/secure', requireClaviAuth(['acme.catalog.write']), handler);
+```
+
+### NestJS
+
+```ts
+ClaviModule.forRoot((c) => c.readFrom.env());
+ClaviNest.attach(expressApp); // OIDC routes
+```
+
+### Next.js (Auth.js)
+
+```ts
+providers: [ClaviProvider((c) => c.readFrom.env().clientId('my-app'))]
 ```
 
 ### Java
@@ -85,27 +82,41 @@ try (var client = ClaviAdminClient.builder()
         .baseUrl("https://clavi.example/")
         .build()) {
     client.auth("admin", password);
-    var page = client.users().find(1, 20, null);
 }
+```
+
+Spring Boot (`application.yml`):
+
+```yaml
+clavi:
+  authority: https://clavi.example
+  client-id: my-app
+  base-url: https://clavi.example/
 ```
 
 ### Python
 
 ```python
 from clavi_admin import ClaviAdminClient
-
 client = ClaviAdminClient(base_url="https://clavi.example/")
 client.auth("admin", password)
-page = client.users.find(page=1, page_size=20)
 ```
+
+FastAPI:
+
+```python
+from clavi_fastapi import add_clavi_openid_connect, require_clavi_auth
+add_clavi_openid_connect(app, lambda c: c.read_from_env().client_id("my-app"))
+```
+
+Django: add `clavi_django` to `INSTALLED_APPS`, set `CLAVI = {...}`, include `clavi_django.urls`.
 
 ### Go
 
 ```go
 c, err := clavi.New(clavi.Config{BaseURL: "https://clavi.example/"})
-if err != nil { /* ... */ }
-if err := c.Auth("admin", password); err != nil { /* ... */ }
-page, err := c.Users.Find(1, 20, "")
+h, err := oidc.New(oidc.Options{Authority: "https://clavi.example", ClientID: "my-app"})
+h.Mount(mux)
 ```
 
-OpenAPI pin used for codegen/docs: `openapi/openapi.v1.json` (refresh with `./scripts/refresh-openapi.sh`).
+OpenAPI pin: `openapi/openapi.v1.json` (refresh with `./scripts/refresh-openapi.sh`).

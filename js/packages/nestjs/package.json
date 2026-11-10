@@ -1,0 +1,31 @@
+{
+  "name": "@clavi/nestjs",
+  "version": "0.1.0",
+  "description": "Clavi OIDC + Admin NestJS module",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@clavi/admin-client": "0.1.0",
+    "@clavi/express": "0.1.0",
+    "@clavi/oidc": "0.1.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": ">=10",
+    "@nestjs/core": ">=10",
+    "express": ">=4",
+    "reflect-metadata": ">=0.1"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/common": { "optional": true },
+    "@nestjs/core": { "optional": true },
+    "express": { "optional": true },
+    "reflect-metadata": { "optional": true }
+  }
+}
