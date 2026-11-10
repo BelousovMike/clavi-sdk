@@ -27,20 +27,44 @@ Or wire DI: `services.AddClaviAdmin(configuration.GetSection("Clavi"))` and inje
 
 ### .NET ASP.NET Core app (login users via Clavi)
 
+Same configuration surface as Serilog — pick any mix:
+
 ```csharp
+// 1) appsettings / env only (section "Clavi")
+builder.Services.AddClaviOpenIdConnect();
+
+// 2) bind a section explicitly
 builder.Services.AddClaviOpenIdConnect(builder.Configuration.GetSection("Clavi"));
-// app policies use roles Clavi puts in the token:
-builder.Services.AddAuthorization(o =>
-    o.AddPolicy("catalog.write", p => p.RequireRole("acme.catalog.write")));
+
+// 3) Options lambda
+builder.Services.AddClaviOpenIdConnect(o =>
+{
+    o.Authority = "https://clavi.example";
+    o.ClientId = "my-app";
+});
+
+// 4) Fluent (Serilog-style): config + overrides
+builder.Services.AddClaviOpenIdConnect(c => c
+    .ReadFrom.Configuration(builder.Configuration)
+    .AcceptAnyServerCertificate(builder.Environment.IsDevelopment())
+    .ClientId("my-app"));
 ```
 
 ```json
 {
   "Clavi": {
     "Authority": "https://clavi.example",
-    "ClientId": "my-app"
+    "ClientId": "my-app",
+    "CallbackPath": "/signin-oidc"
   }
 }
+```
+
+App policies still use roles from the Clavi token:
+
+```csharp
+builder.Services.AddAuthorization(o =>
+    o.AddPolicy("catalog.write", p => p.RequireRole("acme.catalog.write")));
 ```
 
 

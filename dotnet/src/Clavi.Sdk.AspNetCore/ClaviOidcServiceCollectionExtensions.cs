@@ -13,26 +13,44 @@ namespace Clavi.Sdk.AspNetCore;
 /// Wires cookie + OpenID Connect against Clavi (PKCE, optional role claim mapping).
 /// </summary>
 /// <example>
+/// appsettings.json <c>Clavi</c> section only:
+/// <code>builder.Services.AddClaviOpenIdConnect();</code>
+/// Fluent + config (Serilog-style):
 /// <code>
-/// builder.Services.AddClaviOpenIdConnect(builder.Configuration.GetSection("Clavi"));
-/// // app policies stay in the host:
-/// builder.Services.AddAuthorization(o => o.AddPolicy("catalog.write", p => p.RequireRole("acme.catalog.write")));
+/// builder.Services.AddClaviOpenIdConnect(c => c
+///     .ReadFrom.Configuration(builder.Configuration)
+///     .AcceptAnyServerCertificate(builder.Environment.IsDevelopment()));
 /// </code>
 /// </example>
 public static class ClaviOidcServiceCollectionExtensions
 {
-    /// <summary>Bind options from a config section (usually <c>Clavi</c>).</summary>
-    public static AuthenticationBuilder AddClaviOpenIdConnect(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    /// <summary>Bind the default <c>Clavi</c> section from host configuration.</summary>
+    public static AuthenticationBuilder AddClaviOpenIdConnect(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(configuration);
-        services.Configure<ClaviOidcOptions>(configuration);
+        services.AddOptions<ClaviOidcOptions>()
+            .BindConfiguration(ClaviOidcOptions.SectionName);
         return AddClaviOpenIdConnectCore(services);
     }
 
-    /// <summary>Configure options in code.</summary>
+    /// <summary>
+    /// Bind from configuration. Pass host <see cref="IConfiguration"/> (uses section <c>Clavi</c>)
+    /// or an already-selected section such as <c>GetSection("Clavi")</c>.
+    /// </summary>
+    public static AuthenticationBuilder AddClaviOpenIdConnect(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        string sectionName = ClaviOidcOptions.SectionName)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        var section = configuration.GetSection(sectionName);
+        services.Configure<ClaviOidcOptions>(section.Exists() ? section : configuration);
+        return AddClaviOpenIdConnectCore(services);
+    }
+
+    /// <summary>Configure options in code (Options pattern).</summary>
     public static AuthenticationBuilder AddClaviOpenIdConnect(
         this IServiceCollection services,
         Action<ClaviOidcOptions> configure)
@@ -40,6 +58,20 @@ public static class ClaviOidcServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configure);
         services.Configure(configure);
+        return AddClaviOpenIdConnectCore(services);
+    }
+
+    /// <summary>Serilog-style fluent configuration (can combine <c>ReadFrom.Configuration</c> + overrides).</summary>
+    public static AuthenticationBuilder AddClaviOpenIdConnect(
+        this IServiceCollection services,
+        Action<ClaviOidcConfiguration> configure)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        var fluent = new ClaviOidcConfiguration();
+        configure(fluent);
+        services.Configure<ClaviOidcOptions>(fluent.ApplyTo);
         return AddClaviOpenIdConnectCore(services);
     }
 
@@ -56,7 +88,6 @@ public static class ClaviOidcServiceCollectionExtensions
             .AddOpenIdConnect();
     }
 
-    /// <summary>Applies <see cref="ClaviOidcOptions"/> onto the default OIDC scheme.</summary>
     private sealed class ClaviOpenIdConnectConfigureOptions(IOptions<ClaviOidcOptions> claviOptions)
         : IConfigureNamedOptions<OpenIdConnectOptions>
     {
