@@ -15,4 +15,7 @@ internal interface IClientsApi
 
     [Get("/api/v1/oidc/clients/{id}")]
     Task<ClientResponse> FindOneAsync(Guid id, CancellationToken cancellationToken = default);
+
+    [Post("/api/v1/oidc/clients")]
+    Task<ClientResponse> CreateAsync([Body] CreateClientRequest request, CancellationToken cancellationToken = default);
 }

@@ -6,3 +6,7 @@ public sealed record TenantResponse(
     string Slug,
     string? State,
     DateTimeOffset CreatedAt);
+
+public sealed record TenantConfigResponse(bool SelfRegistrationEnabled);
+
+public sealed record TenantConfigBody(bool? SelfRegistrationEnabled = null);

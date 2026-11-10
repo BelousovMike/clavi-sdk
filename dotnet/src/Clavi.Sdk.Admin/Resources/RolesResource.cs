@@ -11,4 +11,7 @@ public sealed class RolesResource
 
     public Task<IReadOnlyList<RoleResponse>> FindAsync(CancellationToken cancellationToken = default)
         => _api.FindAsync(cancellationToken);
+
+    public Task<RoleResponse> CreateAsync(CreateRoleRequest request, CancellationToken cancellationToken = default)
+        => _api.CreateAsync(request, cancellationToken);
 }

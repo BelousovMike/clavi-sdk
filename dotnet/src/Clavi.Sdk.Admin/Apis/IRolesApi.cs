@@ -7,4 +7,7 @@ internal interface IRolesApi
 {
     [Get("/api/v1/roles")]
     Task<IReadOnlyList<RoleResponse>> FindAsync(CancellationToken cancellationToken = default);
+
+    [Post("/api/v1/roles")]
+    Task<RoleResponse> CreateAsync([Body] CreateRoleRequest request, CancellationToken cancellationToken = default);
 }

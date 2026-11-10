@@ -7,3 +7,5 @@ public sealed record RoleResponse(
     string? Description,
     bool IsSystem,
     DateTimeOffset CreatedAt);
+
+public sealed record CreateRoleRequest(string Name, string? Description = null);

@@ -53,6 +53,9 @@ public sealed class ClaviAdminClient : IAsyncDisposable, IDisposable
     public SecurityResource Security { get; }
     public MeResource Me { get; }
 
+    /// <summary>Underlying HttpClient (same cookie jar as Auth / resources).</summary>
+    public HttpClient Http => _http;
+
     /// <summary>BFF login; keeps the session cookie on this client.</summary>
     public Task AuthAsync(string username, string password, CancellationToken cancellationToken = default)
         => _auth.LoginAsync(new LoginRequest(username, password), cancellationToken);

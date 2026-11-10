@@ -30,4 +30,7 @@ public sealed class UsersResource
 
     public Task<IReadOnlyList<RoleResponse>> ListRolesAsync(Guid userId, CancellationToken cancellationToken = default)
         => _api.ListRolesAsync(userId, cancellationToken);
+
+    public Task AssignRoleAsync(Guid userId, Guid roleId, CancellationToken cancellationToken = default)
+        => _api.AssignRoleAsync(userId, roleId, cancellationToken);
 }

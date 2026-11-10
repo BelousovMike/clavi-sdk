@@ -6,13 +6,14 @@ Same idea in every language: create a client, call `auth` / `Auth`, then use res
 
 | Lang | Package |
 |------|---------|
-| .NET | `Clavi.Sdk.Admin` |
+| .NET Admin API | `Clavi.Sdk.Admin` |
+| .NET ASP.NET Core OIDC | `Clavi.Sdk.AspNetCore` |
 | JS | `@clavi/admin-client` |
 | Java | `io.clavi:clavi-admin-client` |
 | Python | `clavi-admin` |
 | Go | `github.com/BelousovMike/clavi-sdk/go/clavi` |
 
-### .NET
+### .NET Admin
 
 ```csharp
 await using var client = new ClaviAdminClient(new ClaviClientOptions {
@@ -23,6 +24,25 @@ var page = await client.Users.FindAsync(page: 1, pageSize: 20);
 ```
 
 Or wire DI: `services.AddClaviAdmin(configuration.GetSection("Clavi"))` and inject `ClaviAdminClient`.
+
+### .NET ASP.NET Core app (login users via Clavi)
+
+```csharp
+builder.Services.AddClaviOpenIdConnect(builder.Configuration.GetSection("Clavi"));
+// app policies use roles Clavi puts in the token:
+builder.Services.AddAuthorization(o =>
+    o.AddPolicy("catalog.write", p => p.RequireRole("acme.catalog.write")));
+```
+
+```json
+{
+  "Clavi": {
+    "Authority": "https://clavi.example",
+    "ClientId": "my-app"
+  }
+}
+```
+
 
 ### JavaScript
 

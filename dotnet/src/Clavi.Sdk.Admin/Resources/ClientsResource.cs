@@ -19,4 +19,7 @@ public sealed class ClientsResource
 
     public Task<ClientResponse> FindOneAsync(Guid id, CancellationToken cancellationToken = default)
         => _api.FindOneAsync(id, cancellationToken);
+
+    public Task<ClientResponse> CreateAsync(CreateClientRequest request, CancellationToken cancellationToken = default)
+        => _api.CreateAsync(request, cancellationToken);
 }

@@ -18,4 +18,13 @@ public sealed class TenantsResource
 
     public Task<TenantResponse> FindOneAsync(Guid id, CancellationToken cancellationToken = default)
         => _api.FindOneAsync(id, cancellationToken);
+
+    public Task<TenantConfigResponse> GetConfigAsync(Guid id, CancellationToken cancellationToken = default)
+        => _api.GetConfigAsync(id, cancellationToken);
+
+    public Task<TenantConfigResponse> PutConfigAsync(
+        Guid id,
+        TenantConfigBody body,
+        CancellationToken cancellationToken = default)
+        => _api.PutConfigAsync(id, body, cancellationToken);
 }
