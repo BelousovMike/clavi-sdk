@@ -1,0 +1,17 @@
+{
+  "name": "@clavi/sdk-bff",
+  "version": "0.1.0-preview.3",
+  "description": "Deprecated alias for ClaviAdminClient.auth",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@clavi/admin-client": "0.1.0-preview.3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "clavi-sdk-js",
+  "private": true,
+  "workspaces": [
+    "packages/sdk-core",
+    "packages/admin-client",
+    "packages/sdk-admin",
+    "packages/sdk-bff"
+  ],
+  "scripts": {
+    "test": "node --test packages/*/src/*.test.js scripts/smoke.mjs"
+  }
+}

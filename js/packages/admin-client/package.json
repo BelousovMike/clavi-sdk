@@ -1,0 +1,17 @@
+{
+  "name": "@clavi/admin-client",
+  "version": "0.1.0-preview.3",
+  "description": "Clavi Admin API client",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@clavi/sdk-core": "0.1.0-preview.3"
+  }
+}
