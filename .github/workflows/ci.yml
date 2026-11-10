@@ -113,7 +113,16 @@ jobs:
       - name: Pack (no upload)
         run: |
           dotnet pack Clavi.Sdk.sln -c Release -o ./artifacts
-          (cd js && npm install && npm pack -w @clavi/sdk-core && npm pack -w @clavi/admin-client)
+          (cd js && npm install \
+            && npm pack -w @clavi/sdk-core \
+            && npm pack -w @clavi/admin-client \
+            && npm pack -w @clavi/oidc \
+            && npm pack -w @clavi/express \
+            && npm pack -w @clavi/nestjs \
+            && npm pack -w @clavi/next)
           (cd java && mvn -B -q package -DskipTests)
-          (cd python && pip install build && python -m build)
-          ls -la artifacts js/*.tgz java/target/*.jar python/dist || true
+          pip install build
+          for dir in python python-oidc python-fastapi python-django; do
+            (cd "$dir" && python -m build)
+          done
+          ls -la artifacts js/*.tgz java/*/target/*.jar python/dist python-oidc/dist || true

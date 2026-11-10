@@ -2,6 +2,8 @@
 
 Admin API client for Clavi. Create a client, `auth`, then use `users` / `groups` / …
 
+App OIDC adapters (separate packages): `clavi-oidc`, `clavi-fastapi`, `clavi-django` — see `../docs/oidc-adapters.md`.
+
 ```python
 from clavi_admin import ClaviAdminClient
 

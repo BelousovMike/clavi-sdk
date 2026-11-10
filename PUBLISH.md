@@ -62,4 +62,11 @@ dotnet pack Clavi.Sdk.sln -c Release -o ./artifacts
 # do not push without intending a real release
 ```
 
-New Wave 1 packages published by the same tag workflow: `@clavi/oidc`, `@clavi/express`, `@clavi/nestjs`, `@clavi/next`, `clavi-oidc`, `clavi-fastapi`, `clavi-django`, `clavi-spring-boot-starter`.
+Wave 1 OIDC adapters published by the same tag workflow:
+
+- npm: `@clavi/oidc`, `@clavi/express`, `@clavi/nestjs`, `@clavi/next` (plus `@clavi/sdk-core`, `@clavi/admin-client`)
+- PyPI: `clavi-admin`, `clavi-oidc`, `clavi-fastapi`, `clavi-django`
+- Maven (opt-in): `clavi-admin-client`, `clavi-spring-boot-starter`
+- Go: tag only (`…/go/clavi`, `…/go/clavi/oidc`)
+
+Do not publish `@clavi/sdk-bff` (removed). Prefer not to advertise `@clavi/sdk-admin` (deprecated alias).

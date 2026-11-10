@@ -2,6 +2,8 @@
 
 Admin API client for Clavi. Create a client, `Auth`, then call `Users`, `Groups`, and friends.
 
+App OIDC middleware: package `github.com/BelousovMike/clavi-sdk/go/clavi/oidc` — see `clavi/oidc/README.md` and `../docs/oidc-adapters.md`.
+
 ```go
 import "github.com/BelousovMike/clavi-sdk/go/clavi"
 

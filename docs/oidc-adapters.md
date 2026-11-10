@@ -78,7 +78,7 @@ Adapters copy each non-empty role string into:
 
 From the same `Clavi` section, adapters construct the language’s Admin client (`ClaviAdminClient` / `clavi.New` / …) and register it in DI / app state.
 
-Admin login (`auth` / cookie session against the BFF) stays separate from end-user OIDC login.
+Admin login (`auth` / cookie session against Clavi’s browser session API) stays separate from end-user OIDC login. There is **no** `@clavi/sdk-bff` package — that alias was removed.
 
 ## Package matrix (Wave 1)
 
