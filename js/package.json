@@ -5,7 +5,6 @@
     "packages/sdk-core",
     "packages/admin-client",
     "packages/sdk-admin",
-    "packages/sdk-bff",
     "packages/oidc",
     "packages/express",
     "packages/nestjs",
