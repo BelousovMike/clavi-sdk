@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Bump package versions across the monorepo.
-# Usage: ./scripts/set-version.sh 0.1.0-preview.4
+# Usage: ./scripts/set-version.sh 0.1.0
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VER="${1:?version required, e.g. 0.1.0-preview.4}"
+VER="${1:?version required, e.g. 0.1.0}"
 
 PY_VER="$VER"
 if [[ "$VER" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-preview\.([0-9]+)$ ]]; then

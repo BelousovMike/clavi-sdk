@@ -1,6 +1,6 @@
 {
   "name": "@clavi/admin-client",
-  "version": "0.1.0-preview.3",
+  "version": "0.1.0",
   "description": "Clavi Admin API client",
   "type": "module",
   "main": "src/index.js",
@@ -12,6 +12,6 @@
     "src"
   ],
   "dependencies": {
-    "@clavi/sdk-core": "0.1.0-preview.3"
+    "@clavi/sdk-core": "0.1.0"
   }
 }

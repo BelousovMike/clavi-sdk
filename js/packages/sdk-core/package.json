@@ -1,6 +1,6 @@
 {
   "name": "@clavi/sdk-core",
-  "version": "0.1.0-preview.3",
+  "version": "0.1.0",
   "description": "Shared HTTP helpers for Clavi SDKs",
   "type": "module",
   "main": "src/index.js",

@@ -1,12 +1,12 @@
 # Publish
 
-Releases are driven by **git tags** (`v0.1.0`, `v0.1.0-preview.4`, …).  
+Releases are driven by **git tags** (`v0.1.0`, `v0.1.1`, …).  
 Workflow: [`.github/workflows/publish.yml`](.github/workflows/publish.yml).
 
 ```bash
-./scripts/set-version.sh 0.1.0-preview.4   # optional: sync files in the repo
-git commit -am "chore: version 0.1.0-preview.4"
-git tag v0.1.0-preview.4
+./scripts/set-version.sh 0.1.0   # optional: sync files in the repo
+git commit -am "chore: version 0.1.0"
+git tag v0.1.0
 git push origin main --tags
 ```
 
@@ -34,7 +34,7 @@ Create the secrets under the GitHub repo **Settings → Secrets and variables �
 
 1. npmjs → Access Tokens → Granular / Automation for `@clavi` scope (create the org/user first).
 2. Store as `NPM_TOKEN`.
-3. Preview versions publish with `--tag preview`; stable with `latest`.
+3. Stable versions publish with npm tag `latest`.
 
 ### PyPI
 

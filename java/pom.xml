@@ -6,7 +6,7 @@
 
   <groupId>io.clavi</groupId>
   <artifactId>clavi-admin-client</artifactId>
-  <version>0.1.0-preview.3</version>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
   <name>clavi-admin-client</name>
   <description>Clavi Admin API client</description>

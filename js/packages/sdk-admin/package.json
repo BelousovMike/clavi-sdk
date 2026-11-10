@@ -1,6 +1,6 @@
 {
   "name": "@clavi/sdk-admin",
-  "version": "0.1.0-preview.3",
+  "version": "0.1.0",
   "description": "Deprecated alias for @clavi/admin-client",
   "type": "module",
   "main": "src/index.js",
@@ -12,6 +12,6 @@
     "src"
   ],
   "dependencies": {
-    "@clavi/admin-client": "0.1.0-preview.3"
+    "@clavi/admin-client": "0.1.0"
   }
 }
