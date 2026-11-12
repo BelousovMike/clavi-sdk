@@ -18,5 +18,3 @@ python/.venv/
 *.tgz
 .DS_Store
 coverage/
-
-
